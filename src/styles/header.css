@@ -31,8 +31,10 @@
   .nav-logo img { height: 36px; }
 }
 
-.nav-logo--has-icon .nav-logo-img--icon { display: none; }
-.nav-logo--has-icon .nav-logo-img--full { display: inline-block; }
+/* Always show the compact PX icon as the primary mark (desktop + mobile)
+   so the wordmark "PrintXpand" only appears once in the header. */
+.nav-logo--has-icon .nav-logo-img--full { display: none; }
+.nav-logo--has-icon .nav-logo-img--icon { display: inline-block; }
 
 .nav-logo-sep {
   margin: 0 12px;
@@ -74,8 +76,6 @@
 }
 
 @media (max-width: 600px) {
-  .nav-logo--has-icon .nav-logo-img--full { display: none; }
-  .nav-logo--has-icon .nav-logo-img--icon { display: inline-block; }
   .nav-logo-sep { margin: 0 8px; font-size: 18px; }
   .nav-logo-text { font-size: 14px; }
   .nav-logo--secondary img,
