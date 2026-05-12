@@ -78,8 +78,21 @@
 @media (max-width: 600px) {
   .nav-logo-sep { margin: 0 8px; font-size: 18px; }
   .nav-logo-text { font-size: 14px; }
+  /* On mobile, show only the icon portion of the secondary lockup —
+     clip the image to a left-anchored square so the "PrintXpand"
+     wordmark and "Connect" text are hidden. White background ensures
+     the icon always sits on a clean surface regardless of header tone. */
   .nav-logo--secondary img,
-  .nav-logo--secondary svg { height: var(--sec-logo-h, 28px); }
+  .nav-logo--secondary svg {
+    height: var(--sec-logo-h, 28px);
+    width: var(--sec-logo-h, 28px);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: left center;
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 2px;
+  }
 }
 
 /* --- Hamburger (mobile) --- */

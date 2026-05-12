@@ -21,9 +21,11 @@ const LOGOS_DIR = path.join(process.cwd(), 'public', 'logos');
 
 export function loadLogos(): LogoOption[] {
   if (!fs.existsSync(LOGOS_DIR)) return [];
+  // Top-level files only — explicitly skip subfolders like `Backup/`.
   const files = fs
-    .readdirSync(LOGOS_DIR)
-    .filter((f) => EXT.test(f))
+    .readdirSync(LOGOS_DIR, { withFileTypes: true })
+    .filter((d) => d.isFile() && EXT.test(d.name))
+    .map((d) => d.name)
     .sort((a, b) => a.localeCompare(b, 'en'));
 
   return files.map((file, i) => {
