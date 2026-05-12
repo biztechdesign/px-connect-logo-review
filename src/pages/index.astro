@@ -1,0 +1,538 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { loadLogos } from '../data/logos';
+
+const options = loadLogos();
+const firstId = options[0]?.id ?? '01';
+---
+
+<BaseLayout title="PX Connect — Header Logo Review">
+  <section class="review">
+    <div class="review-inner">
+      <header class="review-head">
+        <span class="eyebrow">PX CONNECT · LOGO REVIEW</span>
+        <h1>Two logos, side-by-side, in the live header</h1>
+        <p class="review-lede">
+          PrintXpand logo + PX Connect logo lockup. Click any option below to swap the
+          secondary logo and see how it sits in <strong>desktop</strong> and
+          <strong>mobile</strong> headers simultaneously.
+        </p>
+      </header>
+
+      <div class="picker" role="radiogroup" aria-label="Logo options">
+        {options.map((opt, i) => (
+          <button
+            type="button"
+            class={`picker-btn${i === 0 ? ' is-selected' : ''}`}
+            role="radio"
+            aria-checked={i === 0 ? 'true' : 'false'}
+            data-logo={opt.id}
+            data-label={opt.label}
+          >
+            <span class="picker-thumb">
+              <img src={opt.src} alt="" loading="lazy" />
+            </span>
+            <span class="picker-label">{opt.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="legend">
+        <span><b>Selected:</b> <span id="selectedLabel">Option 01</span></span>
+        <span class="legend-hint">Drop any image into <code>public/logos/</code> — it auto-picks up.</span>
+      </div>
+
+      <div class="sizer-grid">
+        <div class="sizer-row">
+          <label class="sizer-label" for="sizerInputDesktop">
+            <span class="sizer-tag">DESKTOP</span>
+            Sub-logo height
+            <span class="sizer-value" id="sizerValueDesktop">36 px</span>
+          </label>
+          <input
+            id="sizerInputDesktop"
+            type="range"
+            min="20"
+            max="64"
+            step="1"
+            value="36"
+            aria-label="Desktop sub-logo height in pixels"
+          />
+        </div>
+        <div class="sizer-row">
+          <label class="sizer-label" for="sizerInputMobile">
+            <span class="sizer-tag sizer-tag--mobile">MOBILE</span>
+            Sub-logo height
+            <span class="sizer-value" id="sizerValueMobile">28 px</span>
+          </label>
+          <input
+            id="sizerInputMobile"
+            type="range"
+            min="14"
+            max="48"
+            step="1"
+            value="28"
+            aria-label="Mobile sub-logo height in pixels"
+          />
+        </div>
+        <div class="sizer-actions">
+          <button type="button" id="sizerReset" class="sizer-reset">
+            Reset (D · 36, M · 28)
+          </button>
+        </div>
+      </div>
+
+      <div class="previews">
+        <article class="preview preview--desktop">
+          <header class="preview-head">
+            <span class="preview-tag">Desktop · ≥1200 px</span>
+            <span class="preview-dim" id="dimDesktop">1280 × 480</span>
+          </header>
+          <div class="preview-stage preview-stage--desktop">
+            <iframe
+              id="frameDesktop"
+              title="Desktop header preview"
+              src={`/frame?logo=${firstId}`}
+              loading="eager"
+            ></iframe>
+          </div>
+        </article>
+
+        <article class="preview preview--mobile">
+          <header class="preview-head">
+            <span class="preview-tag">Mobile · 390 px</span>
+            <span class="preview-dim">390 × 720</span>
+          </header>
+          <div class="preview-stage preview-stage--mobile">
+            <div class="phone">
+              <iframe
+                id="frameMobile"
+                title="Mobile header preview"
+                src={`/frame?logo=${firstId}`}
+                loading="eager"
+              ></iframe>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <footer class="review-foot">
+        <p>
+          <b>How to share:</b> run <code>npm run build</code>, then send the generated
+          <code>dist/</code> folder, or deploy to a static host (Vercel, Cloudflare Pages, Netlify).
+        </p>
+      </footer>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .review {
+    padding: 28px 16px 48px;
+    min-height: 100vh;
+  }
+  .review-inner {
+    max-width: 1340px;
+    margin: 0 auto;
+  }
+  .review-head { margin-bottom: 24px; }
+  .review-head .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .review-head h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; }
+  .review-lede { color: var(--sub); max-width: 720px; font-size: 15px; line-height: 1.6; }
+
+  /* --- Picker --- */
+  .picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin: 16px 0 8px;
+  }
+  .picker-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 8px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+    font-family: inherit;
+  }
+  .picker-btn:hover {
+    border-color: rgba(235, 77, 29, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  .picker-btn:active { transform: translateY(1px); }
+  .picker-btn.is-selected {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(235, 77, 29, 0.18);
+  }
+  .picker-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    background: var(--ivory);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .picker-thumb img { max-height: 40px; width: auto; }
+  .picker-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dark);
+    text-align: center;
+  }
+  .picker-btn.is-selected .picker-label { color: var(--orange); }
+
+  /* --- Legend --- */
+  .legend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+    margin: 16px 0 20px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--sub);
+  }
+  .legend code {
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 12px;
+  }
+  .legend-hint { color: var(--muted); }
+
+  /* --- Size controls (independent desktop & mobile) --- */
+  .sizer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 14px 16px;
+    margin: 0 0 20px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  @media (min-width: 880px) {
+    .sizer-grid {
+      grid-template-columns: 1fr 1fr auto;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+  .sizer-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    min-width: 0;
+  }
+  .sizer-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    white-space: nowrap;
+  }
+  .sizer-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(235, 77, 29, 0.12);
+    color: var(--orange);
+    border-radius: 50px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+  .sizer-tag--mobile {
+    background: rgba(54, 54, 54, 0.08);
+    color: var(--dark);
+  }
+  .sizer-value {
+    margin-left: auto;
+    min-width: 50px;
+    text-align: center;
+    padding: 2px 8px;
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    font-variant-numeric: tabular-nums;
+  }
+  .sizer-row input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 50px;
+    outline: none;
+    cursor: pointer;
+  }
+  .sizer-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--orange);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--orange);
+    cursor: pointer;
+  }
+  .sizer-row input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--orange);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--orange);
+    cursor: pointer;
+  }
+  .sizer-actions { display: flex; justify-content: flex-end; }
+  .sizer-reset {
+    padding: 7px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sub);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .sizer-reset:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  /* --- Previews --- */
+  .previews {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 1100px) {
+    .previews {
+      grid-template-columns: minmax(0, 1fr) 440px;
+      align-items: start;
+    }
+  }
+  .preview {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--sub);
+  }
+  .preview-tag { font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  .preview-stage--desktop {
+    background: repeating-linear-gradient(45deg, #f6f3ec 0 10px, #fbfaf5 10px 20px);
+    padding: 16px;
+    overflow-x: auto;
+  }
+  .preview-stage--desktop iframe {
+    width: 1280px;
+    height: 480px;
+    border: 0;
+    background: #fff;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    display: block;
+  }
+
+  .preview-stage--mobile {
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px;
+    background: repeating-linear-gradient(45deg, #f6f3ec 0 10px, #fbfaf5 10px 20px);
+  }
+  .phone {
+    width: 390px;
+    height: 720px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+  }
+  .phone iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+    display: block;
+  }
+
+  .review-foot {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+  }
+  .review-foot p { margin: 0; font-size: 13px; }
+  .review-foot code {
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .review-head h1 { font-size: 22px; }
+    .phone { width: 340px; height: 640px; }
+    .preview-stage--desktop iframe { width: 1200px; height: 460px; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const buttons = document.querySelectorAll('.picker-btn');
+    const fDesktop = document.getElementById('frameDesktop');
+    const fMobile = document.getElementById('frameMobile');
+    const label = document.getElementById('selectedLabel');
+
+    const inputD = document.getElementById('sizerInputDesktop');
+    const inputM = document.getElementById('sizerInputMobile');
+    const valD = document.getElementById('sizerValueDesktop');
+    const valM = document.getElementById('sizerValueMobile');
+    const resetBtn = document.getElementById('sizerReset');
+
+    // Defaults match the primary PrintXpand mark per breakpoint.
+    const DEFAULT_D = 36;
+    const DEFAULT_M = 28;
+    const clampD = (n) => Math.max(20, Math.min(64, Number(n) || DEFAULT_D));
+    const clampM = (n) => Math.max(14, Math.min(48, Number(n) || DEFAULT_M));
+
+    let currentLogo = '01';
+    let hD = DEFAULT_D;
+    let hM = DEFAULT_M;
+
+    function pushSize(target) {
+      const post = (frame, value) => {
+        try {
+          frame.contentWindow?.postMessage(
+            { type: 'sec-logo-h', value },
+            '*'
+          );
+        } catch (_) {}
+      };
+      if (target !== 'mobile') post(fDesktop, hD);
+      if (target !== 'desktop') post(fMobile, hM);
+      valD.textContent = hD + ' px';
+      valM.textContent = hM + ' px';
+      inputD.value = String(hD);
+      inputM.value = String(hM);
+    }
+
+    function syncUrl() {
+      const qs = `logo=${currentLogo}&hd=${hD}&hm=${hM}`;
+      history.replaceState(null, '', `?${qs}`);
+    }
+
+    function selectLogo(btn) {
+      currentLogo = btn.getAttribute('data-logo');
+      const txt = btn.getAttribute('data-label');
+      buttons.forEach((b) => {
+        b.classList.toggle('is-selected', b === btn);
+        b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+      });
+      label.textContent = txt;
+      // Use ?h= per iframe so a reload restores the size for that side.
+      fDesktop.src = `/frame?logo=${currentLogo}&h=${hD}`;
+      fMobile.src = `/frame?logo=${currentLogo}&h=${hM}`;
+      syncUrl();
+    }
+
+    buttons.forEach((b) => b.addEventListener('click', () => selectLogo(b)));
+
+    inputD.addEventListener('input', () => {
+      hD = clampD(inputD.value);
+      pushSize('desktop');
+      syncUrl();
+    });
+    inputM.addEventListener('input', () => {
+      hM = clampM(inputM.value);
+      pushSize('mobile');
+      syncUrl();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      hD = DEFAULT_D;
+      hM = DEFAULT_M;
+      pushSize();
+      syncUrl();
+    });
+
+    // After each frame finishes loading, re-push that side's size.
+    fDesktop.addEventListener('load', () => {
+      try {
+        fDesktop.contentWindow?.postMessage(
+          { type: 'sec-logo-h', value: hD },
+          '*'
+        );
+      } catch (_) {}
+    });
+    fMobile.addEventListener('load', () => {
+      try {
+        fMobile.contentWindow?.postMessage(
+          { type: 'sec-logo-h', value: hM },
+          '*'
+        );
+      } catch (_) {}
+    });
+
+    // Honour ?logo=NN&hd=NN&hm=NN on initial load (shareable link).
+    const params = new URLSearchParams(location.search);
+    const initialHd = params.get('hd') || params.get('h'); // back-compat
+    const initialHm = params.get('hm') || params.get('h'); // back-compat
+    if (initialHd) hD = clampD(initialHd);
+    if (initialHm) hM = clampM(initialHm);
+    inputD.value = String(hD);
+    inputM.value = String(hM);
+    valD.textContent = hD + ' px';
+    valM.textContent = hM + ' px';
+
+    const initialLogo = params.get('logo');
+    if (initialLogo) {
+      const safe = String(initialLogo).replace(/[^0-9]/g, '').padStart(2, '0').slice(0, 2);
+      const match = Array.from(buttons).find((b) => b.getAttribute('data-logo') === safe);
+      if (match) selectLogo(match);
+    }
+  })();
+</script>

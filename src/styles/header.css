@@ -1,0 +1,220 @@
+/* Topbar / header — port of the live PrintXpand site styles */
+
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 0 20px;
+}
+
+.nav-inner {
+  max-width: 1340px;
+  margin: 0 auto;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+/* --- Dual-logo lockup --- */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-logo img { height: 34px; width: auto; }
+@media (min-width: 1200px) {
+  .nav-logo img { height: 36px; }
+}
+
+.nav-logo--has-icon .nav-logo-img--icon { display: none; }
+.nav-logo--has-icon .nav-logo-img--full { display: inline-block; }
+
+.nav-logo-sep {
+  margin: 0 12px;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--border);
+  user-select: none;
+  line-height: 1;
+}
+
+.nav-logo--secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-text {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* Sub-logo defaults match the main PrintXpand mark next to it.
+   `--sec-logo-h` is the tunable used by the review UI's slider. */
+.nav-logo--secondary img,
+.nav-logo--secondary svg {
+  height: var(--sec-logo-h, 34px);
+  max-height: 60px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+@media (min-width: 1200px) {
+  .nav-logo--secondary img,
+  .nav-logo--secondary svg { height: var(--sec-logo-h, 36px); }
+}
+
+@media (max-width: 600px) {
+  .nav-logo--has-icon .nav-logo-img--full { display: none; }
+  .nav-logo--has-icon .nav-logo-img--icon { display: inline-block; }
+  .nav-logo-sep { margin: 0 8px; font-size: 18px; }
+  .nav-logo-text { font-size: 14px; }
+  .nav-logo--secondary img,
+  .nav-logo--secondary svg { height: var(--sec-logo-h, 28px); }
+}
+
+/* --- Hamburger (mobile) --- */
+.hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 12px;
+  flex-shrink: 0;
+  color: var(--dark);
+}
+.hamburger-icon { display: flex; align-items: center; justify-content: center; }
+.hamburger .icon-close { display: none; width: 22px; height: 22px; padding: 3px; }
+.hamburger[aria-expanded="true"] .icon-menu { display: none; }
+.hamburger[aria-expanded="true"] .icon-close { display: block; }
+
+/* --- Nav links (mobile sheet) --- */
+.nav-links {
+  display: none;
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 998;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.nav-links.open { display: flex; }
+
+.nav-item { position: relative; }
+
+.nav-btn {
+  height: 68px;
+  padding: 0 16px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.nav-btn::after { content: "▾"; font-size: 11px; color: var(--muted); }
+a.nav-btn::after { content: ""; }
+.nav-item:hover .nav-btn { color: var(--orange); }
+
+a.nav-btn--plain {
+  height: 68px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--dark);
+  text-decoration: none;
+  white-space: nowrap;
+}
+a.nav-btn--plain::after { content: none; }
+a.nav-btn--plain:hover { color: var(--orange); }
+
+/* --- CTA --- */
+.nav-ctas {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.btn-solid {
+  padding: 7px 22px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1.5px solid var(--orange);
+  cursor: pointer;
+  border-radius: 50px;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-solid:hover { background: var(--black); border-color: var(--black); }
+
+/* --- Mobile (<1200px): collapsed nav items --- */
+@media (max-width: 1199px) {
+  .nav-item {
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+  }
+  .nav-btn, a.nav-btn--plain {
+    height: 52px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 15px;
+  }
+  .nav-btn::after { content: "+"; font-size: 16px; font-weight: 300; color: var(--muted); }
+  .nav-item.mob-open .nav-btn::after { content: "−"; color: var(--orange); }
+}
+
+/* --- Desktop (≥1200px): inline nav --- */
+@media (min-width: 1200px) {
+  .hamburger { display: none; }
+  .topbar { padding: 0 var(--gutter); }
+  .nav-links {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    background: transparent;
+    border-bottom: none;
+    padding: 0;
+    max-height: none;
+    overflow-y: visible;
+    box-shadow: none;
+    align-items: center;
+    flex: 1;
+    margin-left: 24px;
+  }
+  .nav-item { border-bottom: none; width: auto; }
+  .nav-btn {
+    height: 68px;
+    padding: 0 16px;
+    width: auto;
+    justify-content: center;
+    font-size: 15px;
+  }
+  .nav-btn::after { content: "▾"; font-size: 11px; color: var(--muted); }
+}

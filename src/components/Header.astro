@@ -1,0 +1,115 @@
+---
+/**
+ * Header — PrintXpand topbar with a dual-logo lockup.
+ *
+ * The secondary slot accepts either an image (`secondaryLogoSrc`)
+ * or a text fallback (`secondaryLogoText`).  Render the same
+ * component twice (desktop + mobile preview) with different props
+ * to compare logo options side-by-side.
+ */
+export interface Props {
+  /** Path to the secondary logo image (e.g. /logos/option-01.svg). */
+  secondaryLogoSrc?: string;
+  /** Alt text + accessible label for the secondary logo. */
+  secondaryLogoAlt?: string;
+  /** Fallback text rendered if no image src is provided. */
+  secondaryLogoText?: string;
+  /** Stable id — used so multiple headers on a page have unique hamburger targets. */
+  id?: string;
+}
+
+const {
+  secondaryLogoSrc,
+  secondaryLogoAlt = 'PX Connect',
+  secondaryLogoText = 'PX Connect',
+  id = 'header',
+} = Astro.props;
+
+const navId = `${id}-nav`;
+const hamId = `${id}-hamburger`;
+---
+
+<nav class="topbar" data-section="header" aria-label="Main navigation">
+  <div class="nav-inner">
+    <button
+      class="hamburger"
+      id={hamId}
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls={navId}
+    >
+      <span class="hamburger-icon">
+        <svg class="icon-menu" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <rect y="4" width="22" height="2" rx="1" fill="currentColor"></rect>
+          <rect y="10" width="22" height="2" rx="1" fill="currentColor"></rect>
+          <rect y="16" width="22" height="2" rx="1" fill="currentColor"></rect>
+        </svg>
+        <svg class="icon-close" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <line x1="2" y1="2" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+          <line x1="20" y1="2" x2="2" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+        </svg>
+      </span>
+    </button>
+
+    {/* Primary logo — PrintXpand */}
+    <a class="nav-logo nav-logo--has-icon" href="https://www.printxpand.com/" aria-label="PrintXpand">
+      <img
+        class="nav-logo-img--full"
+        src="/images/logo.svg"
+        alt="PrintXpand"
+        width="140"
+        height="38"
+        loading="eager"
+        decoding="async"
+      />
+      <img
+        class="nav-logo-img--icon"
+        src="/images/logos/px-icon.png"
+        alt="PrintXpand"
+        width="36"
+        height="33"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    <span class="nav-logo-sep" aria-hidden="true">|</span>
+
+    {/* Secondary logo — PX Connect (the variant under review) */}
+    <a class="nav-logo nav-logo--secondary" href="/" aria-label={secondaryLogoAlt}>
+      {secondaryLogoSrc ? (
+        <img
+          src={secondaryLogoSrc}
+          alt={secondaryLogoAlt}
+          loading="eager"
+          decoding="async"
+        />
+      ) : (
+        <span class="nav-logo-text">{secondaryLogoText}</span>
+      )}
+    </a>
+
+    <div class="nav-links" id={navId}>
+      <a class="nav-btn nav-btn--plain" href="#">Suppliers</a>
+      <a class="nav-btn nav-btn--plain" href="#">Platform</a>
+      <a class="nav-btn nav-btn--plain" href="#">Pricing</a>
+    </div>
+
+    <div class="nav-ctas">
+      <button type="button" class="btn-solid">Book a Demo</button>
+    </div>
+  </div>
+</nav>
+
+<script define:vars={{ navId, hamId }}>
+  (() => {
+    const nav = document.getElementById(navId);
+    const btn = document.getElementById(hamId);
+    if (!nav || !btn) return;
+    btn.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+      btn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    });
+  })();
+</script>

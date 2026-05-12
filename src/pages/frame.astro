@@ -1,0 +1,97 @@
+---
+/**
+ * Bare-frame page rendered inside the review iframes.
+ *
+ * The iframe's width (set by the parent) is the viewport width
+ * the header's CSS media queries see — so a 390-px iframe gets
+ * the mobile layout, a 1280-px iframe gets the desktop layout.
+ *
+ * The selected logo is passed in via ?logo=01..10 and resolved
+ * client-side so the parent can swap by changing iframe.src.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import { loadLogos } from '../data/logos';
+
+const options = loadLogos();
+const initialSrc = options[0]?.src ?? '';
+const logoMap = Object.fromEntries(options.map((o) => [o.id, o.src]));
+---
+
+<BaseLayout title="Header preview">
+  <Header
+    id="frame"
+    secondaryLogoSrc={initialSrc}
+    secondaryLogoAlt="PX Connect"
+  />
+
+  <div class="frame-stage">
+    <div class="frame-stage-inner">
+      <p class="frame-note">
+        Header preview — content area kept blank so the lockup reads cleanly.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* The frame is a preview surface, not a real page — no scrolling. */
+  html, body {
+    overflow: hidden;
+    height: 100%;
+  }
+  /* Hide scrollbar UI in case any child still overflows. */
+  body { scrollbar-width: none; -ms-overflow-style: none; }
+  body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+</style>
+<style>
+  .frame-stage {
+    background:
+      linear-gradient(180deg, #fff 0%, #fbfaf5 100%);
+    height: calc(100vh - 68px);
+    padding: 40px 20px;
+    overflow: hidden;
+  }
+  .frame-stage-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .frame-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+    font-style: italic;
+  }
+</style>
+
+<script is:inline define:vars={{ logoMap }}>
+  // 1) Resolve ?logo=NN&h=NN → look up the file path and initial size.
+  // 2) Listen for { type: 'sec-logo-h', value } postMessages so the parent
+  //    review page can scale the sub-logo live without reloading.
+  (function () {
+    const params = new URLSearchParams(location.search);
+    const img = document.querySelector('.nav-logo--secondary img');
+
+    const opt = params.get('logo');
+    if (opt && img) {
+      const safe = String(opt).replace(/[^0-9]/g, '').padStart(2, '0').slice(0, 2);
+      const src = logoMap[safe];
+      if (src) img.setAttribute('src', src);
+    }
+
+    function applyHeight(px) {
+      const n = Math.max(8, Math.min(120, Number(px) || 0));
+      if (!n) return;
+      document.documentElement.style.setProperty('--sec-logo-h', n + 'px');
+    }
+
+    const initialH = params.get('h');
+    if (initialH) applyHeight(initialH);
+
+    window.addEventListener('message', (ev) => {
+      const d = ev.data;
+      if (d && d.type === 'sec-logo-h') applyHeight(d.value);
+    });
+  })();
+</script>

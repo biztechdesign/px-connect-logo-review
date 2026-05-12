@@ -1,0 +1,28 @@
+---
+import '../styles/global.css';
+import '../styles/header.css';
+
+export interface Props {
+  title?: string;
+}
+const { title = 'PX Connect — Logo Review' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#EB4D1D" />
+    <link rel="icon" type="image/png" href="/images/printxpand-logo-favicon.png" />
+    <link rel="preload" href="/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <main id="main">
+      <slot />
+    </main>
+  </body>
+</html>
