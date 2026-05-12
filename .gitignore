@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local reference scrape (not part of the project)
+.reference/
+
+# vercel
+.vercel/
