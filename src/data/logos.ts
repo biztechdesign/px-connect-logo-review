@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { withBase } from '../utils/url';
 
 /**
  * Reads `public/logos/` at build/dev time and emits one entry per image.
@@ -32,6 +33,6 @@ export function loadLogos(): LogoOption[] {
       /^option-\d+$/i.test(base)
         ? `Option ${id}`
         : `Option ${id} · ${base.replace(/[-_]+/g, ' ')}`;
-    return { id, label, src: `/logos/${file}`, file };
+    return { id, label, src: withBase(`/logos/${file}`), file };
   });
 }

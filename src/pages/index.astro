@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { loadLogos } from '../data/logos';
+import { withBase, BASE_PREFIX } from '../utils/url';
 
 const options = loadLogos();
 const firstId = options[0]?.id ?? '01';
+const framePath = withBase('/frame');
 ---
 
 <BaseLayout title="PX Connect — Header Logo Review">
@@ -92,7 +94,7 @@ const firstId = options[0]?.id ?? '01';
             <iframe
               id="frameDesktop"
               title="Desktop header preview"
-              src={`/frame?logo=${firstId}`}
+              src={`${framePath}?logo=${firstId}`}
               loading="eager"
             ></iframe>
           </div>
@@ -108,7 +110,7 @@ const firstId = options[0]?.id ?? '01';
               <iframe
                 id="frameMobile"
                 title="Mobile header preview"
-                src={`/frame?logo=${firstId}`}
+                src={`${framePath}?logo=${firstId}`}
                 loading="eager"
               ></iframe>
             </div>
@@ -420,7 +422,7 @@ const firstId = options[0]?.id ?? '01';
   }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ FRAME_PATH: framePath }}>
   (function () {
     const buttons = document.querySelectorAll('.picker-btn');
     const fDesktop = document.getElementById('frameDesktop');
@@ -474,8 +476,8 @@ const firstId = options[0]?.id ?? '01';
       });
       label.textContent = txt;
       // Use ?h= per iframe so a reload restores the size for that side.
-      fDesktop.src = `/frame?logo=${currentLogo}&h=${hD}`;
-      fMobile.src = `/frame?logo=${currentLogo}&h=${hM}`;
+      fDesktop.src = `${FRAME_PATH}?logo=${currentLogo}&h=${hD}`;
+      fMobile.src = `${FRAME_PATH}?logo=${currentLogo}&h=${hM}`;
       syncUrl();
     }
 

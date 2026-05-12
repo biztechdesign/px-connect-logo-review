@@ -23,20 +23,9 @@
   :root { --section-spacing: 70px; }
 }
 
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('/fonts/fraunces-latin.woff2') format('woff2');
-}
+/* DM Sans + Fraunces are loaded via Google Fonts CDN in BaseLayout.astro
+   (using the CDN keeps them resolvable when the site lives on a sub-path
+   like /px-connect-logo-review/ on GitHub Pages). */
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
