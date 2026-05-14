@@ -15,13 +15,17 @@ import { loadLogos } from '../data/logos';
 
 const options = loadLogos();
 const initialSrc = options[0]?.src ?? '';
-const logoMap = Object.fromEntries(options.map((o) => [o.id, o.src]));
+const initialIconSrc = options[0]?.iconSrc ?? '';
+const logoMap = Object.fromEntries(
+  options.map((o) => [o.id, { logo: o.src, icon: o.iconSrc }]),
+);
 ---
 
 <BaseLayout title="Header preview">
   <Header
     id="frame"
     secondaryLogoSrc={initialSrc}
+    secondaryIconSrc={initialIconSrc}
     secondaryLogoAlt="PX Connect"
   />
 
@@ -66,18 +70,22 @@ const logoMap = Object.fromEntries(options.map((o) => [o.id, o.src]));
 </style>
 
 <script is:inline define:vars={{ logoMap }}>
-  // 1) Resolve ?logo=NN&h=NN → look up the file path and initial size.
+  // 1) Resolve ?logo=NN&h=NN → look up logo + icon paths and initial size.
   // 2) Listen for { type: 'sec-logo-h', value } postMessages so the parent
   //    review page can scale the sub-logo live without reloading.
   (function () {
     const params = new URLSearchParams(location.search);
-    const img = document.querySelector('.nav-logo--secondary img');
+    const fullImg = document.querySelector('.nav-logo-img--secondary-full');
+    const iconImg = document.querySelector('.nav-logo-img--secondary-icon');
 
     const opt = params.get('logo');
-    if (opt && img) {
+    if (opt) {
       const safe = String(opt).replace(/[^0-9]/g, '').padStart(2, '0').slice(0, 2);
-      const src = logoMap[safe];
-      if (src) img.setAttribute('src', src);
+      const pair = logoMap[safe];
+      if (pair) {
+        if (fullImg) fullImg.setAttribute('src', pair.logo);
+        if (iconImg) iconImg.setAttribute('src', pair.icon);
+      }
     }
 
     function applyHeight(px) {

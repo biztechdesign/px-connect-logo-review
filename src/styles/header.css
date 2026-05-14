@@ -61,38 +61,30 @@
 }
 
 /* Sub-logo defaults match the main PrintXpand mark next to it.
-   `--sec-logo-h` is the tunable used by the review UI's slider. */
-.nav-logo--secondary img,
-.nav-logo--secondary svg {
+   `--sec-logo-h` is the tunable used by the review UI's slider.
+   Two images ship — the full lockup for desktop, the icon for mobile —
+   and only one is visible per breakpoint (toggled at @media below). */
+.nav-logo--secondary img {
   height: var(--sec-logo-h, 34px);
   max-height: 60px;
   width: auto;
   display: block;
   object-fit: contain;
 }
+.nav-logo--secondary .nav-logo-img--secondary-full { display: block; }
+.nav-logo--secondary .nav-logo-img--secondary-icon { display: none; }
+
 @media (min-width: 1200px) {
-  .nav-logo--secondary img,
-  .nav-logo--secondary svg { height: var(--sec-logo-h, 36px); }
+  .nav-logo--secondary img { height: var(--sec-logo-h, 36px); }
 }
 
 @media (max-width: 600px) {
   .nav-logo-sep { margin: 0 8px; font-size: 18px; }
   .nav-logo-text { font-size: 14px; }
-  /* On mobile, show only the icon portion of the secondary lockup —
-     clip the image to a left-anchored square so the "PrintXpand"
-     wordmark and "Connect" text are hidden. White background ensures
-     the icon always sits on a clean surface regardless of header tone. */
-  .nav-logo--secondary img,
-  .nav-logo--secondary svg {
-    height: var(--sec-logo-h, 28px);
-    width: var(--sec-logo-h, 28px);
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    object-position: left center;
-    background: #ffffff;
-    border-radius: 4px;
-    padding: 2px;
-  }
+  /* Swap: show the icon variant, hide the full lockup. */
+  .nav-logo--secondary .nav-logo-img--secondary-full { display: none; }
+  .nav-logo--secondary .nav-logo-img--secondary-icon { display: block; }
+  .nav-logo--secondary img { height: var(--sec-logo-h, 28px); }
 }
 
 /* --- Hamburger (mobile) --- */

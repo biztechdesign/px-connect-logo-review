@@ -10,8 +10,10 @@ import { withBase } from '../utils/url';
  * to compare logo options side-by-side.
  */
 export interface Props {
-  /** Path to the secondary logo image (e.g. /logos/option-01.svg). */
+  /** Desktop placement — full lockup image (e.g. /logos/logo-01.png). */
   secondaryLogoSrc?: string;
+  /** Mobile placement — icon-only image (e.g. /logos/icon-01.png). Defaults to secondaryLogoSrc. */
+  secondaryIconSrc?: string;
   /** Alt text + accessible label for the secondary logo. */
   secondaryLogoAlt?: string;
   /** Fallback text rendered if no image src is provided. */
@@ -22,10 +24,12 @@ export interface Props {
 
 const {
   secondaryLogoSrc,
+  secondaryIconSrc,
   secondaryLogoAlt = 'PX Connect',
   secondaryLogoText = 'PX Connect',
   id = 'header',
 } = Astro.props;
+const effectiveIconSrc = secondaryIconSrc ?? secondaryLogoSrc;
 
 const navId = `${id}-nav`;
 const hamId = `${id}-hamburger`;
@@ -77,15 +81,27 @@ const hamId = `${id}-hamburger`;
 
     <span class="nav-logo-sep" aria-hidden="true">|</span>
 
-    {/* Secondary logo — PX Connect (the variant under review) */}
+    {/* Secondary logo — PX Connect (the variant under review).
+        Two img elements ship side-by-side; CSS shows the full lockup
+        at ≥601 px and the icon at ≤600 px. */}
     <a class="nav-logo nav-logo--secondary" href="/" aria-label={secondaryLogoAlt}>
       {secondaryLogoSrc ? (
-        <img
-          src={secondaryLogoSrc}
-          alt={secondaryLogoAlt}
-          loading="eager"
-          decoding="async"
-        />
+        <>
+          <img
+            class="nav-logo-img--secondary-full"
+            src={secondaryLogoSrc}
+            alt={secondaryLogoAlt}
+            loading="eager"
+            decoding="async"
+          />
+          <img
+            class="nav-logo-img--secondary-icon"
+            src={effectiveIconSrc}
+            alt={secondaryLogoAlt}
+            loading="eager"
+            decoding="async"
+          />
+        </>
       ) : (
         <span class="nav-logo-text">{secondaryLogoText}</span>
       )}
