@@ -21,12 +21,20 @@ import { withBase } from '../utils/url';
 export interface LogoOption {
   id: string;
   label: string;
-  /** Desktop placement (full lockup). */
+  /** Desktop placement URL (full lockup). */
   src: string;
-  /** Mobile placement (icon only). */
+  /** Mobile placement URL (icon only). */
   iconSrc: string;
   /** Filename of the logo file (for display / debugging). */
   file: string;
+  /** Actual filename used for the logo half of the pair. */
+  logoFile: string;
+  /** Actual filename used for the icon half of the pair. */
+  iconFile: string;
+  /** True when a real logo file was found in the pair. */
+  hasLogo: boolean;
+  /** True when a real icon file was found in the pair. */
+  hasIcon: boolean;
 }
 
 const EXT = /\.(png|jpe?g|svg|webp|gif|avif)$/i;
@@ -61,14 +69,25 @@ export function loadLogos(): LogoOption[] {
   for (const [id, pair] of Array.from(groups.entries()).sort(([a], [b]) =>
     a.localeCompare(b, 'en'),
   )) {
-    const logo = pair.logo ?? pair.icon!;
-    const icon = pair.icon ?? pair.logo!;
+    const logoFile = pair.logo ?? pair.icon!;
+    const iconFile = pair.icon ?? pair.logo!;
+    const missing: string[] = [];
+    if (!pair.logo) missing.push('logo');
+    if (!pair.icon) missing.push('icon');
+    const label =
+      missing.length === 0
+        ? `Option ${id}`
+        : `Option ${id} · missing ${missing.join(' + ')}`;
     paired.push({
       id,
-      label: `Option ${id}`,
-      src: withBase(`/logos/${logo}`),
-      iconSrc: withBase(`/logos/${icon}`),
-      file: logo,
+      label,
+      src: withBase(`/logos/${logoFile}`),
+      iconSrc: withBase(`/logos/${iconFile}`),
+      file: logoFile,
+      logoFile,
+      iconFile,
+      hasLogo: Boolean(pair.logo),
+      hasIcon: Boolean(pair.icon),
     });
   }
 
@@ -84,6 +103,10 @@ export function loadLogos(): LogoOption[] {
       src: withBase(`/logos/${file}`),
       iconSrc: withBase(`/logos/${file}`),
       file,
+      logoFile: file,
+      iconFile: file,
+      hasLogo: true,
+      hasIcon: true,
     });
   }
 

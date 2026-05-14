@@ -118,6 +118,59 @@ const framePath = withBase('/frame');
         </article>
       </div>
 
+      <section class="pairs" aria-label="Logo + icon pair audit">
+        <header class="pairs-head">
+          <span class="eyebrow">PAIR AUDIT</span>
+          <h2>Logo + Icon pairs</h2>
+          <p class="pairs-lede">
+            Each option's <b>desktop logo</b> and <b>mobile icon</b> side-by-side.
+            Use this to confirm the right icon-NN.png is paired with the right logo-NN.png.
+          </p>
+        </header>
+        <div class="pairs-grid">
+          {options.map((opt) => {
+            const incomplete = !opt.hasLogo || !opt.hasIcon;
+            return (
+              <article
+                class={`pair-card${incomplete ? ' pair-card--incomplete' : ''}`}
+                data-option={opt.id}
+              >
+                <header class="pair-card-head">
+                  <span class="pair-card-label">Option {opt.id}</span>
+                  {incomplete && (
+                    <span class="pair-card-warn">
+                      missing {[!opt.hasLogo && 'logo', !opt.hasIcon && 'icon'].filter(Boolean).join(' + ')}
+                    </span>
+                  )}
+                </header>
+                <div class="pair-card-body">
+                  <div class="pair-slot pair-slot--logo">
+                    <span class="pair-slot-tag">DESKTOP · LOGO</span>
+                    <div class={`pair-slot-canvas${!opt.hasLogo ? ' pair-slot-canvas--fallback' : ''}`}>
+                      <img src={opt.src} alt={`Option ${opt.id} desktop logo`} loading="lazy" />
+                    </div>
+                    <code class="pair-slot-file">
+                      {opt.logoFile}
+                      {!opt.hasLogo && ' (using icon)'}
+                    </code>
+                  </div>
+                  <div class="pair-slot pair-slot--icon">
+                    <span class="pair-slot-tag pair-slot-tag--mobile">MOBILE · ICON</span>
+                    <div class={`pair-slot-canvas pair-slot-canvas--square${!opt.hasIcon ? ' pair-slot-canvas--fallback' : ''}`}>
+                      <img src={opt.iconSrc} alt={`Option ${opt.id} mobile icon`} loading="lazy" />
+                    </div>
+                    <code class="pair-slot-file">
+                      {opt.iconFile}
+                      {!opt.hasIcon && ' (using logo)'}
+                    </code>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
       <footer class="review-foot">
         <p>
           <b>How to share:</b> run <code>npm run build</code>, then send the generated
@@ -397,6 +450,133 @@ const framePath = withBase('/frame');
     border: 0;
     background: #fff;
     display: block;
+  }
+
+  /* --- Pair audit --- */
+  .pairs {
+    margin-top: 32px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .pairs-head { margin-bottom: 16px; }
+  .pairs-head h2 { font-size: 22px; line-height: 1.2; margin: 6px 0 4px; }
+  .pairs-lede {
+    margin: 0;
+    color: var(--sub);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .pairs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  @media (min-width: 720px) {
+    .pairs-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1100px) {
+    .pairs-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .pair-card {
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .pair-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+  .pair-card-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+  .pair-card-warn {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #b54a14;
+    background: #fef0e6;
+    border: 1px solid #f4c39c;
+    padding: 2px 8px;
+    border-radius: 50px;
+  }
+  .pair-card--incomplete { border-color: #f4c39c; }
+  .pair-slot-canvas--fallback {
+    background: repeating-linear-gradient(45deg, #fff5ed 0 6px, #ffeadb 6px 12px);
+    border-style: dashed;
+  }
+  .pair-card-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 14px;
+    align-items: end;
+  }
+  .pair-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .pair-slot--icon { align-items: flex-end; }
+  .pair-slot-tag {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--orange);
+    background: rgba(235, 77, 29, 0.1);
+    padding: 2px 8px;
+    border-radius: 50px;
+    align-self: flex-start;
+  }
+  .pair-slot--icon .pair-slot-tag { align-self: flex-end; }
+  .pair-slot-tag--mobile {
+    color: var(--dark);
+    background: rgba(54, 54, 54, 0.08);
+  }
+  .pair-slot-canvas {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 76px;
+  }
+  .pair-slot-canvas img {
+    max-height: 52px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  .pair-slot-canvas--square {
+    width: 76px;
+    height: 76px;
+    flex-shrink: 0;
+  }
+  .pair-slot-canvas--square img {
+    max-height: 56px;
+    max-width: 56px;
+  }
+  .pair-slot-file {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--muted);
+    background: transparent;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .review-foot {
